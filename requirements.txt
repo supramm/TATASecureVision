@@ -1,0 +1,6 @@
+ultralytics==11.*
+opencv-python
+roboflow
+shapely
+PyYAML
+pytest
