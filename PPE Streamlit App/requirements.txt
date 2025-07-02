@@ -1,0 +1,7 @@
+streamlit
+streamlit-lottie
+streamlit-webrtc
+ultralytics
+opencv-python
+torch
+requests
