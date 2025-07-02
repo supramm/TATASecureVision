@@ -7,6 +7,7 @@ import cv2
 import requests
 import numpy as np
 import json
+import os
 
 # Streamlit page config
 st.set_page_config(page_title="PPE Detection", page_icon="🦺", layout="wide")
@@ -28,7 +29,8 @@ st.caption("Using YOLOv8 + Streamlit for live compliance monitoring")
 # Load model
 @st.cache_resource
 def load_model():
-    return YOLO("best.pt")
+    model_path = os.path.join(os.path.dirname(__file__), "best.pt")
+    return YOLO(model_path)
 
 model = load_model()
 class_names = model.names
