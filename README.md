@@ -1,58 +1,122 @@
-# 🔒 TataSecureVision
+# 🛡️ TATASecure Vision 🚧  
+### Smart vision safeguarding Tata Motors’ workforce.
 
-**Smart vision safeguarding Tata Motors’ workforce.**
-
-TataSecureVision is a computer vision-based safety monitoring system developed during my internship at Tata Technologies. The system ensures industrial safety compliance by detecting personal protective equipment (PPE), monitoring designated safety zones, and enforcing kitchen safety protocols — all powered by real-time YOLOv11-based object detection.
-
----
-
-## 🚀 Deployable Project
-
-🔗 **Try the live demo:**
-[https://tatasecurevision-ppe3.streamlit.app/](https://tatasecurevision-ppe3.streamlit.app/)
+Welcome to **TATASecure Vision** – a real-time, multi-model safety surveillance suite designed to **prevent accidents, ensure compliance**, and **safeguard lives** in industrial environments using the power of **Computer Vision + AI** 💡.
 
 ---
 
-## 🧠 Modules
+## 🔍 Overview
 
-### 1. 🦺 PPE Compliance Detection
+Industrial safety is non-negotiable. TATASecure Vision is an **end-to-end AI-powered system** that deploys **multiple custom-trained object detection models** on **live factory camera feeds** to ensure:
 
-* Detects whether factory workers are wearing mandatory safety equipment like **harnesses**.
-* Model trained on custom-labeled datasets with class balancing and YOLOv11 optimizations.
-* Webcam/live input support via Streamlit.
+- **PPE Compliance**
+- **Harness Safety at Heights**
+- **Walking Within Safe Zones**
+- **Kitchen/Factory Hazard Alerts**
 
-### 2. 📍 Safety Region Monitoring (Optional Zone Compliance)
-
-* Verifies if personnel are within designated safety zones.
-* Uses **Shapely** to calculate whether a person is inside the defined polygonal area.
-
-### 3. 🍳 Kitchen Safety Enforcement *(Planned/Prototype)*
-
-* Ensures proper protective measures like gloves and masks in kitchen areas.
-* Designed for expansion into food or health safety zones.
+These models are deployed on the edge and cloud via **Streamlit WebApps** to provide **real-time feedback** and decision support for on-ground supervisors and safety officers.
 
 ---
 
-## 🛠️ Tech Stack
+## 🚀 Deployed Apps
 
-* **YOLOv11** – Object detection
-* **Python**, **OpenCV**, **Streamlit** – App development
-* **Shapely** – Zone compliance (geospatial)
-* **Label Studio** – Dataset annotation
-* **Google Colab** – Training
-* **Streamlit Cloud** – Hosting
+| Module | Description | Accuracy | Live App |
+|--------|-------------|----------|----------|
+| 🦺 **PPE Detection** | Detects **Safety Helmet**, **Vest**, **Glasses**, **Gloves**, and **Boots** at factory entrances. | **93%** | [Open App 🔗](https://tatasecurevision-ppe3.streamlit.app/) |
+| 🧗‍♂️ **Harness Detection** | Monitors usage of **Safety Harnesses** on elevated workstations. | **98%** | [Open App 🔗](https://tatasecurevision-harness.streamlit.app/) |
+| 🚶‍♂️ **Safety Region Compliance** | Ensures workers walk only in **safe green-lined factory zones**. Uses **Shapely** for polygon-based checks. | **95%** | [Open App 🔗](https://tatasecurevision-safetyregion.streamlit.app/) |
+| 🍳 **Kitchen Safety Detection** | Custom model to detect **Kadhai** and **Coco**; flags if **hot oil vessels are left unattended > 5 mins**. | Custom Accuracy | [Open App 🔗](https://tatasecurevision-kitchensafe.streamlit.app/) |
 
 ---
 
-## 📁 Project Structure
+## 📦 Model Training Details
 
-```bash
-TATASecureVision/
-│
-├── PPEStreamlitApp/        # Streamlit UI Code
-├── runs/                   # YOLOv11 output
-├── datasets/               # Annotated images
-├── best.pt                 # Trained YOLOv11 model weights
-├── utils/                  # Helper functions
-└── README.md               # This file
-```
+All models were trained using **Roboflow datasets** and annotated using **CVAT** and **Label Studio**. Here's a quick overview:
+
+### 🦺 PPE Detection
+- **Classes**: Safety Helmet, Vest, Glasses, Gloves, Boots  
+- **Accuracy**: **93%**  
+- **Dataset**: [Roboflow PPE Dataset](https://app.roboflow.com/supram/safety-pyazl-khx3r/)  
+- **Deployment**: Cameras at **entry checkpoints**
+
+### 🧗‍♂️ Safety Harness Detection
+- **Classes**: Harness On / Harness Off  
+- **Accuracy**: **98%**  
+- **Dataset**: [Harness Detection Dataset](https://app.roboflow.com/supram/harness-knfmk-9ozbf/1)  
+- **Deployment**: **Overhead cameras** in high-altitude workspaces
+
+### 🚶‍♂️ Region Compliance Detection
+- **Approach**: Trained on **live factory video feed**, and used **Shapely** for polygon detection  
+- **Use Case**: Ensures workers stay within **green-lined safe zones**
+
+### 🍳 Kitchen Safety Model
+- **Goal**: Detect if **Kadhai with hot oil** is left **unattended > 5 mins**  
+- **Custom Annotated Dataset**: [Kitchen Safety Dataset](https://app.roboflow.com/supram/kitchensafety/1)  
+- **Annotation Tools**: **CVAT**, **Label Studio**  
+- **Deployment**: **Factory canteen kitchens**
+
+---
+
+## 🔧 Tech Stack
+
+- **YOLOv8 / YOLOv11** (Ultralytics)
+- **Streamlit** for frontend apps
+- **Roboflow** for dataset management
+- **Shapely** for zone detection
+- **CVAT** and **Label Studio** for custom annotations
+- **Google Colab + PyTorch** for model training
+- **Hosted on Streamlit Cloud**
+
+---
+
+## 🧠 Key Highlights
+
+✅ Multiple purpose-built CV models trained for factory-specific use-cases  
+✅ Seamless deployment with live inference on video streams  
+✅ Combines **geometric logic** (Shapely) and **temporal logic** (unattended duration)  
+✅ High-accuracy models with real-world validation  
+✅ Custom annotation and dataset creation to tailor models for critical safety scenarios
+
+---
+
+## 👨‍💼 About the Author
+
+👋 Hi, I’m **Supram Kumar**, a passionate AI & ML engineer currently working with **Tata Technologies**. This project was conceptualized, developed, and deployed as part of my **industrial internship** experience to solve **real safety problems** in industrial zones.
+
+Feel free to check out my other work or connect on [LinkedIn](https://www.linkedin.com/in/supramkumar) or [GitHub](https://github.com/supramm) 💼
+
+---
+
+## 📸 Screenshots:
+
+<!-- Add images/gifs here -->
+<!-- Example: ![PPE Detection](images/ppe_demo.gif) -->
+
+---
+
+## 🧩 Future Work
+
+- 📦 Docker-based edge deployment for offline cameras  
+- 🔄 Integration with SMS/Email/WhatsApp alert system  
+- 📊 Admin dashboard with analytics & alert logs  
+- 🤖 Auto-retraining pipeline for continuously improving performance  
+
+---
+
+## 💡 Installation & Local Development
+
+Coming soon...
+
+> All deployed apps are ready-to-use, no setup required.
+
+---
+
+## ⭐ Give It a Star!
+
+If you find this project helpful or interesting, don’t forget to ⭐ star this repo and share it!
+
+---
+
+## 📬 Feedback / Contributions
+
+Have an idea or want to contribute? Open an issue or drop a PR! Collaboration is welcome 🙌
