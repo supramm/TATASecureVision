@@ -1,7 +1,7 @@
-streamlit
-streamlit-webrtc
-ultralytics
-opencv-python-headless
-torch
-streamlit-lottie
-requests
+streamlit==1.35.0
+streamlit-webrtc==0.45.0
+ultralytics==8.3.161
+opencv-python-headless==4.8.1.78
+torch>=1.13.0,<2.1.0
+numpy>=1.23.0
+av==10.0.0
