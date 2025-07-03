@@ -16,8 +16,12 @@ st.caption("Monitors if a person leaves the kadhai unattended for more than 5 mi
 # ----------------- Load Models -----------------
 @st.cache_resource
 def load_models():
-    kadhai_model = YOLO("best.pt")
-    person_model = YOLO("yolov8n.pt")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    kadhai_model_path = os.path.join(script_dir, "best.pt")
+    person_model_path = os.path.join(script_dir, "yolov8n.pt")
+
+    kadhai_model = YOLO(kadhai_model_path)
+    person_model = YOLO(person_model_path)
     return kadhai_model, person_model
 
 kadhai_model, person_model = load_models()
@@ -55,12 +59,14 @@ class KadhaiSafetyTransformer(VideoTransformerBase):
         for box in kadhai_boxes:
             x1, y1, x2, y2, conf, cls = box.cpu().numpy()
             cv2.rectangle(annotated_frame, (int(x1), int(y1)), (int(x2), int(y2)), (255, 165, 0), 2)
-            cv2.putText(annotated_frame, f"Kadhai {conf:.2f}", (int(x1), int(y1)-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,165,0), 2)
+            cv2.putText(annotated_frame, f"Kadhai {conf:.2f}", (int(x1), int(y1)-10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,165,0), 2)
 
         for box in person_boxes:
             x1, y1, x2, y2, conf, cls = box.cpu().numpy()
             cv2.rectangle(annotated_frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-            cv2.putText(annotated_frame, f"Person {conf:.2f}", (int(x1), int(y1)-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
+            cv2.putText(annotated_frame, f"Person {conf:.2f}", (int(x1), int(y1)-10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
 
         # Safety Logic
         if kadhai_detected:
