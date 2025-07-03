@@ -1,7 +1,39 @@
-streamlit==1.35.0
-streamlit-webrtc==0.45.0
+streamlit==1.46.1
+streamlit-webrtc==0.63.3
+
+# Core CV & Detection
 ultralytics==8.3.161
-opencv-python-headless==4.8.1.78
-torch>=1.13.0,<2.1.0
-numpy>=1.23.0
-av==10.0.0
+torch==2.7.1
+torchvision==0.22.1
+opencv-python==4.11.0.86
+opencv-python-headless==4.11.0.86
+numpy==2.3.1
+
+# Webcam/RTSP & low-level media
+av==14.4.0
+aioice==0.10.1
+aiortc==1.13.0
+pylibsrtp==0.12.0
+pyee==13.0.0
+ifaddr==0.2.0
+
+# Utilities
+pandas==2.3.0
+requests==2.32.4
+typing_extensions==4.14.0
+packaging==25.0
+pyparsing==3.2.3
+PyYAML==6.0.2
+attrs==25.3.0
+tenacity==9.1.2
+tqdm==4.67.1
+urllib3==2.5.0
+certifi==2025.6.15
+idna==3.10
+charset-normalizer==3.4.2
+
+# Security
+cffi==1.17.1
+cryptography==45.0.5
+pyOpenSSL==25.1.0
+pycparser==2.22
