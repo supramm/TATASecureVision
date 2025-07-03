@@ -1,8 +1,7 @@
 streamlit
+streamlit-lottie
 streamlit-webrtc
 ultralytics
-opencv-python
-numpy
+opencv-python-headless
 torch
-torchvision
 requests
