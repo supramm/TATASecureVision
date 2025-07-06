@@ -27,14 +27,18 @@ st.title("🧰 Real-Time Harness Compliance Monitoring")
 st.caption("Using YOLOv8 + Streamlit for live safety violation detection")
 
 # Load models
+
 @st.cache_resource
 def load_models():
-    person_model = YOLO("yolo11n.pt")
-    harness_model = YOLO("best.pt")
+    person_path = os.path.join(os.path.dirname(__file__), "yolo11n.pt")
+    harness_path = os.path.join(os.path.dirname(__file__), "best.pt")
+    
+    person_model = YOLO(person_path)
+    harness_model = YOLO(harness_path)
+    
     return person_model, harness_model
 
 person_model, harness_model = load_models()
-
 # Ensure output directory exists
 os.makedirs("flagged_frames", exist_ok=True)
 
