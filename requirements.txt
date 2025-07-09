@@ -1,5 +1,5 @@
 ultralytics==11.*
-opencv-python
+opencv-python-headless>=4.8.0
 roboflow
 shapely
 PyYAML
