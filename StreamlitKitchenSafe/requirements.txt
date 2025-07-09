@@ -1,15 +1,15 @@
+# Core UI
 streamlit==1.46.1
 streamlit-webrtc==0.63.3
 
-# Core CV & Detection
+# CV & Detection
 ultralytics==8.3.161
 torch==2.7.1
 torchvision==0.22.1
-opencv-python==4.11.0.86
-opencv-python-headless==4.11.0.86
+opencv-python-headless>=4.8.0
 numpy==2.3.1
 
-# Webcam/RTSP & low-level media
+# Webcam / RTSP support
 av==14.4.0
 aioice==0.10.1
 aiortc==1.13.0
