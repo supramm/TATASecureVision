@@ -20,6 +20,8 @@ These models are deployed on the edge and cloud via **Streamlit WebApps** to pro
 
 ## 🚀 Deployed Apps
 
+🌐 Full System Dashboard:Access all modules and live demos at🔗 https://tata-secure-vision.vercel.app/
+
 | Module | Description | Accuracy | Live App |
 |--------|-------------|----------|----------|
 | 🦺 **PPE Detection** | Detects **Safety Helmet**, **Vest**, **Glasses**, **Gloves**, and **Boots** at factory entrances. | **93%** | [Open App 🔗](https://tatasecurevision-ppe3.streamlit.app/) |
