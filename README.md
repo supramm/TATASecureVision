@@ -71,6 +71,16 @@ All models were trained using **Roboflow datasets** and annotated using **CVAT**
 
 ---
 
+## 📸 Screenshots:
+
+<img width="1918" height="1079" alt="VercelSite" src="https://github.com/user-attachments/assets/2c03c6b4-f945-45a4-b3d7-ba465ed2835b" />
+<img width="1919" height="1079" alt="VercelSite2" src="https://github.com/user-attachments/assets/e6f30bf0-451a-4807-84b8-7d6856f8a332" />
+<img width="1901" height="1080" alt="VercelSite3" src="https://github.com/user-attachments/assets/18b30be2-3965-46e4-8908-6651b0d41e79" />
+<img width="1919" height="1079" alt="VercelSite4" src="https://github.com/user-attachments/assets/e5d8ca90-0871-493e-bd8b-5c98e70c5e5b" />
+
+---
+
+
 ## 🧠 Key Highlights
 
 ✅ Multiple purpose-built CV models trained for factory-specific use-cases  
@@ -87,12 +97,7 @@ All models were trained using **Roboflow datasets** and annotated using **CVAT**
 
 Feel free to check out my other work or connect on [LinkedIn](https://www.linkedin.com/in/supramkumar) or [GitHub](https://github.com/supramm) 💼
 
----
 
-## 📸 Screenshots:
-
-<!-- Add images/gifs here -->
-<!-- Example: ![PPE Detection](images/ppe_demo.gif) -->
 
 ---
 
