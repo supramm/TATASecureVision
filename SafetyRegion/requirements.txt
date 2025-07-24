@@ -1,0 +1,7 @@
+streamlit
+ultralytics
+opencv-python-headless>=4.8.0,<5.0.0
+numpy
+shapely
+Pillow
+requests
