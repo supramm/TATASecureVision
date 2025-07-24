@@ -8,7 +8,8 @@ import os
 from datetime import datetime
 
 # Load your model
-model = YOLO("yolo11n.pt")  # 🔁 Replace with your custom model if needed
+model_path = os.path.join(os.path.dirname(__file__), "yolo11n.pt")
+model = YOLO(model_path)  # 🔁 Replace with your custom model if needed
 
 # Directories
 os.makedirs("output/violations", exist_ok=True)
@@ -127,7 +128,8 @@ with col1:
         demo_image = Image.open(demo_file)
     else:
         # ⬇️ Replace this with your default image path (must exist on local or host)
-        demo_image = Image.open("demo.png")
+        img_path = os.path.join(os.path.dirname(__file__), "demo.png")
+        demo_image = Image.open(img_path)
         st.caption("Default image loaded (replace 'demo.png')")
 
     st.image(demo_image, caption="Original Demo Image", use_container_width=True)
