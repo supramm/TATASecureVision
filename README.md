@@ -4,6 +4,10 @@
 Welcome to **TATASecure Vision** – a real-time, multi-model safety surveillance suite designed to **prevent accidents, ensure compliance**, and **safeguard lives** in industrial environments using the power of **Computer Vision + AI** 💡.
 
 ---
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![YOLO](https://img.shields.io/badge/YOLOv11-ObjectDetection-red)
+![Streamlit](https://img.shields.io/badge/Streamlit-App-orange)
+
 
 ## 🔍 Overview
 
