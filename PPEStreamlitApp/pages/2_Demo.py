@@ -167,7 +167,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Paths — always resolved from repo root via os.getcwd() ────────────────────
-BASE_DIR    = os.getcwd()
+BASE_DIR    = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODEL_PATH  = os.path.join(BASE_DIR, "best.pt")
 DEMO_DIR    = os.path.join(BASE_DIR, "demo_videos")
 
