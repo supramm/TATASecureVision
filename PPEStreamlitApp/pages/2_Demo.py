@@ -67,11 +67,55 @@ else:
 conf       = st.sidebar.slider("Confidence", 0.10, 0.90, 0.25, 0.05)
 frame_skip = st.sidebar.slider("Process every N frames", 1, 6, 2)
 
-run  = st.sidebar.button("▶ Run",  disabled=video_path is None, use_container_width=True)
-stop = st.sidebar.button("■ Stop", use_container_width=True)
+st.sidebar.markdown("---")
+mode = st.sidebar.radio(
+    "Mode",
+    ["▶ Live Preview", "💾 Export Annotated Video"],
+    help="Live Preview streams frames as they process. Export saves the full annotated video for download."
+)
+
+run  = st.sidebar.button("Run",  disabled=video_path is None, use_container_width=True)
+stop = st.sidebar.button("■ Stop", disabled=mode == "💾 Export Annotated Video",
+                          use_container_width=True)
 
 if stop: st.session_state.running = False
 if run:  st.session_state.running = True
+
+# ── Helpers ────────────────────────────────────────────────────────────────────
+def render_peak_html(peak_counts):
+    rows = []
+    for cls, cnt in peak_counts.most_common():
+        is_bad = "no-" in cls.lower() or "without" in cls.lower()
+        colour = "#ff4b4b" if is_bad else "#21c354"
+        rows.append(
+            f"<div style='display:flex;justify-content:space-between;"
+            f"padding:5px 8px;margin-bottom:4px;border-radius:5px;"
+            f"background:rgba(255,255,255,0.05);'>"
+            f"<span style='color:{colour}'>{cls}</span>"
+            f"<span style='font-weight:700;color:{colour}'>{cnt}</span>"
+            f"</div>"
+        )
+    return "".join(rows)
+
+def render_summary(peak_counts):
+    st.markdown("---")
+    st.subheader("✅ Analysis Complete — Final Summary")
+    violations = {k: v for k, v in peak_counts.items()
+                  if "no-" in k.lower() or "without" in k.lower()}
+    compliant  = {k: v for k, v in peak_counts.items()
+                  if "no-" not in k.lower() and "without" not in k.lower()}
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown("**✅ PPE Detected**")
+        for k, v in sorted(compliant.items(), key=lambda x: -x[1]):
+            st.metric(k, v)
+    with c2:
+        st.markdown("**❌ Violations**")
+        if violations:
+            for k, v in sorted(violations.items(), key=lambda x: -x[1]):
+                st.metric(k, v, delta=f"peak {v} in one frame", delta_color="inverse")
+        else:
+            st.success("No violations detected!")
 
 # ── Layout ─────────────────────────────────────────────────────────────────────
 vid_col, info_col = st.columns([2, 1])
@@ -90,10 +134,12 @@ with info_col:
     prog_slot = st.empty()
 
 if not st.session_state.running:
-    frame_slot.info("Select a video source and press ▶ Run")
+    frame_slot.info("Select a video source and press Run")
 
-# ── Inference loop ─────────────────────────────────────────────────────────────
-if st.session_state.running and video_path:
+# ══════════════════════════════════════════════════════════════════════════════
+# MODE A — Live Preview
+# ══════════════════════════════════════════════════════════════════════════════
+if st.session_state.running and video_path and mode == "▶ Live Preview":
 
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
@@ -116,58 +162,35 @@ if st.session_state.running and video_path:
             if idx % frame_skip != 0:
                 continue
 
-            # ── Inference ──
             results  = model(frame, conf=conf, verbose=False)[0]
             boxes    = results.boxes
-
-            # safe class extraction — handles empty detections
             detected = [class_names[int(c)] for c in boxes.cls] if len(boxes) > 0 else []
 
-            # ── Peak counts — max per class per frame ──
             frame_counts = Counter(detected)
             for cls, cnt in frame_counts.items():
                 if cnt > peak_counts[cls]:
                     peak_counts[cls] = cnt
 
-            # ── Annotated frame — results.plot() handles boxes + labels ──
-            annotated = results.plot(line_width=2)   # no font_size arg — not in all versions
+            annotated = results.plot(line_width=2)
             h, w      = annotated.shape[:2]
             if w > 800:
                 annotated = cv2.resize(annotated, (800, int(h * 800 / w)))
 
-            frame_slot.image(
-                cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB),
-                use_container_width=True,
-            )
+            frame_slot.image(cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB),
+                             use_container_width=True)
 
-            # ── This frame panel ──
             if detected:
                 lines = []
                 for cls, cnt in sorted(frame_counts.items(), key=lambda x: -x[1]):
-                    is_bad = "no-" in cls.lower() or "without" in cls.lower()
-                    icon   = "🔴" if is_bad else "🟢"
+                    icon = "🔴" if ("no-" in cls.lower() or "without" in cls.lower()) else "🟢"
                     lines.append(f"{icon} **{cls}** × {cnt}")
                 det_slot.markdown("\n".join(lines))
             else:
                 det_slot.markdown("_Nothing detected_")
 
-            # ── Peak counts panel ──
             if peak_counts:
-                rows = []
-                for cls, cnt in peak_counts.most_common():
-                    is_bad = "no-" in cls.lower() or "without" in cls.lower()
-                    colour = "#ff4b4b" if is_bad else "#21c354"
-                    rows.append(
-                        f"<div style='display:flex;justify-content:space-between;"
-                        f"padding:5px 8px;margin-bottom:4px;border-radius:5px;"
-                        f"background:rgba(255,255,255,0.05);'>"
-                        f"<span style='color:{colour}'>{cls}</span>"
-                        f"<span style='font-weight:700;color:{colour}'>{cnt}</span>"
-                        f"</div>"
-                    )
-                peak_slot.markdown("".join(rows), unsafe_allow_html=True)
+                peak_slot.markdown(render_peak_html(peak_counts), unsafe_allow_html=True)
 
-            # ── Progress ──
             pct = min(idx / total, 1.0)
             ts  = f"{int(idx/fps//60):02d}:{int(idx/fps%60):02d}"
             prog_slot.progress(pct, text=f"{ts}  |  frame {idx}/{total}")
@@ -175,32 +198,106 @@ if st.session_state.running and video_path:
             time.sleep(0.01)
 
     finally:
-        # always release cap even if an exception or st.stop() fires
         cap.release()
         st.session_state.running = False
 
-    # ── Final summary ──────────────────────────────────────────────────────────
     if peak_counts:
-        st.markdown("---")
-        st.subheader("✅ Analysis Complete — Final Summary")
+        render_summary(peak_counts)
 
-        violations = {k: v for k, v in peak_counts.items()
-                      if "no-" in k.lower() or "without" in k.lower()}
-        compliant  = {k: v for k, v in peak_counts.items()
-                      if "no-" not in k.lower() and "without" not in k.lower()}
+# ══════════════════════════════════════════════════════════════════════════════
+# MODE B — Export Annotated Video
+# ══════════════════════════════════════════════════════════════════════════════
+if st.session_state.running and video_path and mode == "💾 Export Annotated Video":
 
-        c1, c2 = st.columns(2)
-        with c1:
-            st.markdown("**✅ PPE Detected**")
-            for k, v in sorted(compliant.items(), key=lambda x: -x[1]):
-                st.metric(k, v)
-        with c2:
-            st.markdown("**❌ Violations**")
-            if violations:
-                for k, v in sorted(violations.items(), key=lambda x: -x[1]):
-                    st.metric(k, v, delta=f"peak {v} in one frame", delta_color="inverse")
-            else:
-                st.success("No violations detected!")
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        st.error("Could not open video — try re-uploading or check the demo file path.")
+        st.session_state.running = False
+        st.stop()
+
+    total  = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 1
+    fps    = float(cap.get(cv2.CAP_PROP_FPS)) or 25.0
+    width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    idx    = 0
+    peak_counts = Counter()
+
+    # temp output file
+    out_tmp  = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
+    out_path = out_tmp.name
+    out_tmp.close()
+
+    writer = cv2.VideoWriter(
+        out_path,
+        cv2.VideoWriter_fourcc(*"mp4v"),
+        fps,
+        (width, height),
+    )
+
+    prog_slot.info("⏳ Processing all frames and writing annotated video…")
+
+    try:
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+
+            idx += 1
+            results  = model(frame, conf=conf, verbose=False)[0]
+            boxes    = results.boxes
+            detected = [class_names[int(c)] for c in boxes.cls] if len(boxes) > 0 else []
+
+            frame_counts = Counter(detected)
+            for cls, cnt in frame_counts.items():
+                if cnt > peak_counts[cls]:
+                    peak_counts[cls] = cnt
+
+            # write every frame (no skip — export should be complete)
+            annotated = results.plot(line_width=2)
+            writer.write(annotated)
+
+            # preview every 15th frame so user sees progress
+            if idx % 15 == 0:
+                h, w = annotated.shape[:2]
+                preview = cv2.resize(annotated, (800, int(h * 800 / w))) if w > 800 else annotated
+                frame_slot.image(cv2.cvtColor(preview, cv2.COLOR_BGR2RGB),
+                                 use_container_width=True,
+                                 caption=f"Processing frame {idx}/{total}…")
+
+            if peak_counts:
+                peak_slot.markdown(render_peak_html(peak_counts), unsafe_allow_html=True)
+
+            pct = min(idx / total, 1.0)
+            ts  = f"{int(idx/fps//60):02d}:{int(idx/fps%60):02d}"
+            prog_slot.progress(pct, text=f"{ts}  |  frame {idx}/{total}")
+
+    finally:
+        cap.release()
+        writer.release()
+        st.session_state.running = False
+
+    # ── Offer download ──────────────────────────────────────────────────────
+    frame_slot.empty()
+    prog_slot.empty()
+
+    if os.path.exists(out_path) and os.path.getsize(out_path) > 0:
+        with open(out_path, "rb") as f:
+            video_bytes = f.read()
+        os.unlink(out_path)   # clean up temp file after reading
+
+        st.success("✅ Done! Your annotated video is ready.")
+        st.download_button(
+            label="⬇️ Download Annotated Video",
+            data=video_bytes,
+            file_name="ppe_annotated.mp4",
+            mime="video/mp4",
+            use_container_width=True,
+        )
+    else:
+        st.error("Something went wrong writing the video file.")
+
+    if peak_counts:
+        render_summary(peak_counts)
 
 st.markdown("---")
 st.caption("© 2025 | TATAVision Secure | Powered by YOLOv8")
