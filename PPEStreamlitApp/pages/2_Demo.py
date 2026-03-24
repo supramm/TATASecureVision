@@ -176,8 +176,9 @@ if st.session_state.running and video_path and mode == "▶ Live Preview":
             if w > 800:
                 annotated = cv2.resize(annotated, (800, int(h * 800 / w)))
 
-            frame_slot.image(cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB),
-                             use_container_width=True)
+            if idx % 5 == 0:
+                frame_slot.image(cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB),
+                                 use_container_width=True)
 
             if detected:
                 lines = []
